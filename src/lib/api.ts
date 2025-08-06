@@ -147,7 +147,29 @@ export async function getAllPosts(): Promise<Post[]> {
 // 🔄 添加用于触发重新验证的函数
 export async function triggerRevalidation(type: 'post' | 'posts', slug?: string) {
   const revalidateSecret = process.env.REVALIDATE_SECRET;
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  
+  // 🌐 智能检测部署环境的 baseUrl
+  const getBaseUrl = () => {
+    // 优先使用手动设置的 NEXT_PUBLIC_SITE_URL
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+      return process.env.NEXT_PUBLIC_SITE_URL;
+    }
+    
+    // Vercel 自动提供的 URL
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`;
+    }
+    
+    // 其他部署平台的 URL 检测
+    if (process.env.DEPLOY_URL) {
+      return process.env.DEPLOY_URL;
+    }
+    
+    // 开发环境回退
+    return 'http://localhost:3000';
+  };
+  
+  const baseUrl = getBaseUrl();
 
   if (!revalidateSecret) {
     console.warn('⚠️ REVALIDATE_SECRET not set');

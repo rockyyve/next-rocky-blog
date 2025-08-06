@@ -166,7 +166,7 @@ export async function triggerRevalidation(type: 'post' | 'posts', slug?: string)
     }
     
     // 开发环境回退
-    return 'http://localhost:3000';
+    return 'https://next-rocky-blog-pjni02op2-mistyrainxys-projects.vercel.app';
   };
   
   const baseUrl = getBaseUrl();
